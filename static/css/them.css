@@ -1,0 +1,17 @@
+* {
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+}
+
+.hgithlight {
+    border-radius: 8px;
+    background-color: rgba(30, 143, 255, 0.172);
+    color: dodgerblue;
+    padding: 5px 8px;
+}
+
+.thumbnail {
+    width: 80px;
+    border-radius: 8px;
+}

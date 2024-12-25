@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, jsonify
 import os
+import db_connect
 import uuid
 
 
 app = Flask(__name__)
+
 
 def upload_image(sourcefile=None):
     if sourcefile is not None:
@@ -14,18 +16,41 @@ def upload_image(sourcefile=None):
     return unique_filename
 
 
-
-
-    
-
 @app.route("/")
 def index():
-    return render_template("index.html")
+
+    query =  "SELECT * FROM `products`"
+    con = db_connect.db_connect()
+    cursor = con.cursor()
+    cursor.execute(query=query)
+
+    products = cursor.fetchall()
+    # return jsonify(products)
+
+    return render_template("index.html", products=products)
 
 @app.route("/create-product", methods=["GET","POST"])
 def create_post():
+    name= request.form['name']
+    price = request.form['price']
     sourcefile = request.files['thumbnail']
-    return upload_image(sourcefile=sourcefile)
+    thumbnail = upload_image(sourcefile=sourcefile)
+
+
+    query = f""" 
+        INSERT INTO products( `product_name`, `product_price`, `thumbnail`) 
+        VALUES ('{name}', '{price}', '{thumbnail}')
+      """
+    
+    con = db_connect.db_connect()
+    cursor = con.cursor()
+
+    cursor.execute(query)
+    con.commit()
+
+    return redirect('/')
+
+    
 
 
 
